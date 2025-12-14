@@ -14,6 +14,7 @@ ALBUM_PATTERNS = {
     "We Will Rock You": r"we\s*will\s*rock\s*you",
     "Monday Motivation": r"monday\s*motivation",
     "Genre Wheel": r"genre\s*wheel",
+    "Weekend Vibe": r"weekend\s*vibe",
 }
 
 
@@ -27,7 +28,7 @@ FILENAME_RE = re.compile(
     (?P<second>\d{2})s
     \s*-\s*
     (?P<title>.+?)
-    \.m4a$
+    \.mp4$
     """,
     re.VERBOSE | re.IGNORECASE,
 )
@@ -53,12 +54,12 @@ def detect_album(title: str) -> str:
     return "Specials"
 
 
-def tag_file(path: Path, dry_run: bool) -> str:
-    m = FILENAME_RE.match(path.name)
+def tag_file(path: Path, orig_name: str, dry_run: bool) -> str:
+    m = FILENAME_RE.match(orig_name)
     if not m:
-        raise ValueError(f"Filename does not match pattern: {path.name}")
+        raise ValueError(f"Filename does not match pattern: {orig_name}")
 
-    original_name = path.name
+    original_name = orig_name
 
     title = normalize_whitespace(m.group("title"))
     album = detect_album(title)
@@ -127,7 +128,7 @@ def run(input_path: Path, output_path: Path, dry_run: bool = False) -> None:
         )
 
         # 2. Tag temp file, get final filename
-        final_name = tag_file(tmp_path, dry_run=dry_run)
+        final_name = tag_file(tmp_path, input_path.name, dry_run=dry_run)
         final_path = output_path / final_name
 
         if dry_run:
@@ -141,4 +142,5 @@ def run(input_path: Path, output_path: Path, dry_run: bool = False) -> None:
         if not dry_run and tmp_path.exists():
             tmp_path.unlink(missing_ok=True)
 
-    
+
+run(Path("/tmp/jani - 2025-12-13 23h08m42s -  weekend vibe  aufuns  Holzkern pmm werbung.mp4"), Path("/home/florian/mount/media/music/Jani"), False)
