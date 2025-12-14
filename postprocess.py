@@ -141,6 +141,3 @@ def run(input_path: Path, output_path: Path, dry_run: bool = False) -> None:
     finally:
         if not dry_run and tmp_path.exists():
             tmp_path.unlink(missing_ok=True)
-
-
-run(Path("/tmp/jani - 2025-12-13 23h08m42s -  weekend vibe  aufuns  Holzkern pmm werbung.mp4"), Path("/home/florian/mount/media/music/Jani"), False)
